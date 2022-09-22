@@ -13,7 +13,7 @@ ENV ARCH="x86_64" \
 
 User root
 
-RUN addgroup -S $USER && adduser -S $USER -G $USER -G abuild \
+RUN addgroup -S $USER && adduser -S $USER -G $USER \
     # https://gitlab.alpinelinux.org/alpine/aports/-/issues/11768
     && sed -i -e 's/https/http/' /etc/apk/repositories \
     # Add application user and application dependencies
