@@ -36,7 +36,7 @@ jobs:
       with:
         platforms: linux/arm64
         push: true
-        tags: ghcr.io/opsboost/iss-display-streamer:latest
+        tags: ghcr.io/opsboost/iss-display-provider:latest
 
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
