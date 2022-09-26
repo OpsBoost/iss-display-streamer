@@ -2,14 +2,12 @@
 
 set -euo pipefail
 
-export CONTAINER=firefox-streamer
+CONTAINER=iss-display-streamer
 readonly CONTAINER
-export LISTEN_ADDRESS="[::1]"
+LISTEN_ADDRESS="127.0.0.1"
 readonly LISTEN_ADDRESS
-export VERBOSE=1
+VERBOSE=1
 readonly VERBOSE
-export DEFAULT_URL="https://uhr.ptb.de/"
-readonly DEFAULT_URL
 SCRIPT_NAME=$(basename "$0")
 readonly SCRIPT_NAME
 
@@ -42,13 +40,21 @@ else
 fi
 
 ${executor} run -e XDG_RUNTIME_DIR=/tmp \
+                -e WAYLAND_DISPLAY=wayland-1 \
+                -e DISPLAY=:0 \
                 -e WLR_BACKENDS=headless \
                 -e WLR_LIBINPUT_NO_DEVICES=1 \
                 -e SWAYSOCK=/tmp/sway-ipc.sock \
                 -e MOZ_ENABLE_WAYLAND=1 \
-                -e URL=${DEFAULT_URL} \
+                -e BROWSER_FULLSCREEN=1 \
+                -e BROWSER_TABSWITCH_PAUSE=30 \
+                -e URL="https://bbusse.github.io/analog-digital-clock|\
+                        https://www.rainviewer.com/map.html?loc=50.9307,10.1074,6&oFa=0&oC=1&oU=1&oCS=0&oF=1&oAP=1&c=1&o=100&lm=1&layer=radar&sm=1&sn=1&undefined=0|\
+                        https://upload.wikimedia.org/wikipedia/commons/2/2b/Berlin_U-bahn_und_S-bahn.svg" \
                 -e STREAM_SOURCE="v4l2" \
                 -e DEBUG="1" \
-                -p "${LISTEN_ADDRESS}":6000:6000 \
+                -p "${LISTEN_ADDRESS}:5910:5910" \
+                -p "${LISTEN_ADDRESS}:6000:6000/tcp" \
+                -p "${LISTEN_ADDRESS}:6000:6000/udp" \
                 --device /dev/video0:/dev/video0 \
                 ${CONTAINER}
