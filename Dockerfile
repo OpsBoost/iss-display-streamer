@@ -1,14 +1,18 @@
 ARG SWAYVNC_VERSION=latest
 ARG GECKODRIVER_VERSION=0.31.0
+ARG DISPLAY_CONTROLLER_URL=https://raw.githubusercontent.com/opsboost/iss-display-controller/main
+ARG WEBDRIVER_URL=https://raw.githubusercontent.com/bbusse/webdriver-util/main
 FROM ghcr.io/bbusse/swayvnc:${SWAYVNC_VERSION}
 LABEL maintainer="Björn Busse <bj.rn@baerlin.eu>"
-LABEL org.opencontainers.image.source https://github.com/bbusse/sway-streamer
+LABEL org.opencontainers.image.source https://github.com/opsboost/iss-display-streamer
 
+ARG DISPLAY_CONTROLLER_URL
 ARG GECKODRIVER_VERSION
+ARG WEBDRIVER_URL
 
 ENV ARCH="x86_64" \
     USER="firefox-user" \
-    APK_ADD="firefox gstreamer gstreamer-tools gst-plugins-bad gst-plugins-good python3 py3-pip wf-recorder" \
+    APK_ADD="curl firefox gstreamer gstreamer-tools gst-plugins-bad gst-plugins-good imv mpv python3 py3-pip wf-recorder ffmpeg" \
     APK_DEL=""
 
 User root
@@ -32,13 +36,13 @@ RUN addgroup -S $USER && adduser -S $USER -G $USER \
     && geckodriver --version \
 
     # Add latest webdriver-util script for firefox automation
-    && wget -P /usr/local/bin https://raw.githubusercontent.com/bbusse/webdriver-util/main/webdriver_util.py \
-    && wget -O /tmp/requirements_webdriver.txt https://raw.githubusercontent.com/bbusse/webdriver_util/main/requirements.txt \
+    && wget -P /usr/local/bin ${WEBDRIVER_URL}/webdriver_util.py \
+    && wget -O /tmp/requirements_webdriver.txt ${WEBDRIVER_URL}/requirements.txt \
     && chmod +x /usr/local/bin/webdriver_util.py \
 
     # Add stream-controller for stream handling
-    && wget -P /usr/local/bin https://raw.githubusercontent.com/bbusse/stream-controller/main/controller.py \
-    && wget -O /tmp/requirements_controller.txt https://raw.githubusercontent.com/bbusse/stream-controller/main/requirements.txt \
+    && wget -P /usr/local/bin ${DISPLAY_CONTROLLER_URL}/controller.py \
+    && wget -O /tmp/requirements_controller.txt ${DISPLAY_CONTROLLER_URL}/requirements.txt \
     && chmod +x /usr/local/bin/controller.py \
 
     # Add controller.py to startup
