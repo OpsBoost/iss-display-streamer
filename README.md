@@ -1,16 +1,16 @@
-# sway-streamer
-Creates a desktop session video stream
+# iss-display-streamer
+Creates an infoscreen display that can be accessed over the network
 
 
 ## Build container
 Uses [swayvnc](https://github.com/bbusse/swayvnc) as base image
 ```
-$ podman build -t sway-streamer .
+$ podman build -t iss-display-streamer .
 ```
 
 ## Run container
 ```
-$ podman run -e URL -v /dev/shm:/dev/shm -ti sway-streamer
+$ podman run -e URL iss-display-streamer
 ```
 
 ## Open stream with media player
